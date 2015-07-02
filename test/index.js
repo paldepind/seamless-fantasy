@@ -15,6 +15,14 @@ function double(n) {
   return n * 2;
 }
 
+function add(n, m) {
+  return n + m;
+}
+
+function addTwo(n) {
+  return n + 2;
+}
+
 describe('numbers', function() {
   describe('equals', function() {
     it('is equal if same number', function() {
@@ -93,11 +101,25 @@ describe('array', function() {
     });
   });
   describe('ap', function() {
+    it('applies each function in first to each value in second', function() {
+      assert.deepEqual(ap([double, addTwo], [1, 2, 3]), [2, 4, 6, 3, 4, 5]);
+    });
   });
   describe('of', function() {
     it('returns list of value', function() {
       assert.deepEqual(of([1, 2], 3), [3]);
       assert.deepEqual(of(['hello', 'there'], 'of'), ['of']);
+    });
+  });
+  describe('reduce', function() {
+    it('reduces array', function() {
+      assert.strictEqual(reduce(add, 3, [3, 4, 10]), 20);
+    });
+  });
+  describe('chain', function() {
+    it('concats arrays created by function', function() {
+      function f(n) { return [n, 2*n, 3*n]; }
+      assert.deepEqual(chain(f, [1, 2, 3]), [1, 2, 3, 2, 4, 6, 3, 6, 9]);
     });
   });
 });

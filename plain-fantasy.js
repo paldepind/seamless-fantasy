@@ -19,9 +19,9 @@ function arrayEq(a, b) {
 }
 
 function arrayConcat(a, b) {
-  var i, j, n = [];
-  for (i = 0; i < a.length; ++i) n[i] = a[i];
-  for (j = 0; j < b.length; ++j) n[i + j] = b[j];
+  var i, n = [];
+  for (i = 0; i < a.length; ++i) n.push(a[i]);
+  for (i = 0; i < b.length; ++i) n.push(b[i]);
   return n;
 }
 
@@ -31,6 +31,33 @@ function arrayMap(a, f) {
   return n;
 }
 
+function arrayAp(a, b) {
+  var i, j, n = [];
+  for (i = 0; i < a.length; ++i) {
+    for (j = 0; j < b.length; ++j) {
+      n[i * b.length + j] = a[i](b[j]);
+    }
+  }
+  return n;
+}
+
+function arrayChain(a, f) {
+  var b, i, j, n = [];
+  for (i = 0; i < a.length; ++i) {
+    b = f(a[i]);
+    for (j = 0; j < b.length; ++j) n.push(b[j]);
+  }
+  return n;
+}
+
+function arrayReduce(f, b, a) {
+  for (var i = 0; i < a.length; ++i) {
+    b = f(b, a[i]);
+  }
+  return b;
+}
+
+// (Eq a, Eq b) => a -> b -> Boolean
 function equals(a, b) {
   return isNumber(a) ? a === b
        : isString(a) ? a === b
@@ -38,50 +65,61 @@ function equals(a, b) {
                      : undefined;
 }
 
-e.concat = function concat(a, b) {
+// (Monoid m) => m -> m -> m
+function concat(a, b) {
   return isNumber(a) ? a + b
        : isString(a) ? a + b
        : isArray(a)  ? arrayConcat(a, b)
                      : undefined;
-};
+}
 
-e.empty = function empty(a) {
+// (Monoid m) => * -> m
+function empty(a) {
   return isNumber(a) ? 0
        : isString(a) ? ''
        : isArray(a)  ? []
                      : undefined;
-};
+}
 
-e.map = function map(f, a) {
+// (Functor f) => (a -> b) -> f a -> f b
+function map(f, a) {
   return isArray(a)  ? arrayMap(a, f)
                      : undefined;
-};
+}
 
-e.ap = function ap() {
-  return isNumber(a) ? 0
-       : isString(a) ? ''
-       : isArray(a)  ? []
-                     : undefined;
-};
+// (Applicative f) => f (a -> b) -> f a -> f b
+function ap(a, b) {
+  return isArray(a) ? arrayAp(a, b)
+                    : undefined;
+}
 
-e.of = function of(a, b) {
-  return isArray(a)  ? [b]
-                     : undefined;
-};
+// (Applicative f) => f a -> b -> f b
+function of(a, b) {
+  return isArray(a) ? [b]
+                    : undefined;
+}
 
-e.reduce = function reduce() {
-};
+// (Foldable t) => (a -> b -> b) -> b -> t a -> b
+function reduce(f, b, a) {
+  return isArray(a) ? arrayReduce(f, b, a)
+                    : undefined;
+}
 
-e.sequence = function sequence() {
-};
+function sequence() {
+}
 
-e.chain = function chain() {
-};
+function chain(f, a) {
+  return isArray(a) ? arrayChain(a, f)
+                    : undefined;
+}
 
-e.extend = function extend() {
-};
+function extend() {
+}
 
-e.extract = function extract() {
-};
+function extract() {
+}
 
-e.equals = equals;
+module.exports = {
+  equals: equals, concat: concat, empty: empty, map: map, ap: ap, of: of,
+  reduce: reduce, chain: chain
+};
