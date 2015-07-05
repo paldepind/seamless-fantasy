@@ -1,5 +1,5 @@
 var assert = require('assert');
-var p = require('../plain-fantasy.js');
+var p = require('../seamless-fantasy.js');
 
 var equals = p.equals;
 var concat = p.concat;
@@ -122,4 +122,54 @@ describe('array', function() {
       assert.deepEqual(chain(f, [1, 2, 3]), [1, 2, 3, 2, 4, 6, 3, 6, 9]);
     });
   });
+});
+
+describe('object', function() {
+  describe('equals', function() {
+    it('is equal if values are equal', function() {
+      assert.strictEqual(equals({a: 12, likes: 'to', play: [1, 2]},
+                                {a: 12, likes: 'to', play: [1, 2]}), true);
+    });
+    it('is not equal if values differ', function() {
+      assert.strictEqual(equals({a: 12, likes: 'to', play: [1, 2]},
+                                {a: 13, likes: 'to', play: [1, 2]}), false);
+      assert.strictEqual(equals({a: 12, likes: 'to', play: [1, 2]},
+                                {a: 12, likes: 'tO', play: [1, 2]}), false);
+      assert.strictEqual(equals({a: 12, likes: 'to', play: [1, 2]},
+                                {a: 12, likes: 'to', play: [2, 2]}), false);
+    });
+    it('is not equal if extra keys are in second object', function() {
+      assert.strictEqual(equals({a: 12, play: [1, 2]},
+                                {a: 12, likes: 'to', play: [1, 2]}), false);
+    });
+  });
+  describe('empty', function() {
+    it('is object without keys', function() {
+      assert.equal(Object.keys(empty({foo: 'bar'})).length, 0);
+    });
+  });
+  describe('concat', function() {
+    it('merges keys', function() {
+      var o1 = {hello: 'I', my: 'name', is: 'nice'};
+      var o2 = {i: 'think', youre: 'famous'};
+      var m = concat(o1, o2);
+      assert.deepEqual(Object.keys(m).sort(), [
+        'hello', 'i', 'is', 'my', 'youre'
+      ]);
+    });
+    it('merges values', function() {
+      var o1 = {hello: 'I', my: 'name', is: 'nice'};
+      var o2 = {i: 'think', youre: 'famous'};
+      var m = concat(o1, o2);
+      assert.deepEqual(m,
+        {hello: 'I', my: 'name', is: 'nice',
+        i: 'think', youre: 'famous'}
+      );
+    });
+    it('overrides with values from left', function() {
+      var o1 = {hello: 'there'};
+      var o2 = {hello: 'you'};
+      assert.deepEqual(concat(o1, o2), {hello: 'there'});
+    })
+  })
 });

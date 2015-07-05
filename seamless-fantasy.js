@@ -5,8 +5,10 @@ var isArray = Array.isArray || function(a) {
 function isFunction(f) { return typeof f === 'function'; }
 function isNumber(n) { return typeof n === 'number'; }
 function isString(s) { return typeof s === 'string'; }
-
-var e = module.exports;
+function isObject(value) {
+  var type = typeof value;
+  return !!value && (type == 'object' || type == 'function');
+}
 
 // Array
 
@@ -57,11 +59,33 @@ function arrayReduce(f, b, a) {
   return b;
 }
 
-// (Eq a, Eq b) => a -> b -> Boolean
+// Object
+
+function objectEq(a, b) {
+  var aN = 0, bN = 0;
+  for (var key in a) {
+    if (!(key in b) || !equals(a[key], b[key])) {
+      return false;
+    }
+    aN++;
+  }
+  for (key in b) bN++;
+  return aN === bN;
+}
+
+function objectConcat(a, b) {
+  var key, n = {};
+  for (key in b) n[key] = b[key];
+  for (key in a) n[key] = a[key];
+  return n;
+}
+
+// (eq a, eq b) => a -> b -> boolean
 function equals(a, b) {
   return isNumber(a) ? a === b
        : isString(a) ? a === b
        : isArray(a)  ? arrayEq(a, b)
+       : isObject(a) ? objectEq(a, b)
                      : undefined;
 }
 
@@ -70,6 +94,7 @@ function concat(a, b) {
   return isNumber(a) ? a + b
        : isString(a) ? a + b
        : isArray(a)  ? arrayConcat(a, b)
+       : isObject(a) ? objectConcat(a, b)
                      : undefined;
 }
 
@@ -78,6 +103,7 @@ function empty(a) {
   return isNumber(a) ? 0
        : isString(a) ? ''
        : isArray(a)  ? []
+       : isObject(a) ? {}
                      : undefined;
 }
 
@@ -120,6 +146,6 @@ function extract() {
 }
 
 module.exports = {
-  equals: equals, concat: concat, empty: empty, map: map, ap: ap, of: of,
-  reduce: reduce, chain: chain
+  equals: equals, concat: concat, empty: empty, map: map,
+  ap: ap, of: of, reduce: reduce, chain: chain
 };
