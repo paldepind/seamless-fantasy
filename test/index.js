@@ -181,3 +181,18 @@ describe('object', function() {
     })
   })
 });
+
+describe('function', function() {
+  describe('map', function() {
+    it('composes two unary functions', function() {
+      var fn = map(double, addTwo);
+      assert.equal(fn.length, 1);
+      assert.equal(fn(5), 14);
+    });
+    it('composes a unary and a binary function', function() {
+      var fn = map(double, add);
+      assert.equal(fn.length, 2);
+      assert.equal(fn(1, 3), 8);
+    })
+  })
+})

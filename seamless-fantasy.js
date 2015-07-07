@@ -1,4 +1,5 @@
 var curry2 = require('ramda/src/internal/_curry2');
+var curryN = require('ramda/src/curryN');
 
 var isArray = Array.isArray || function(a) {
   return Object.prototype.toString.call(a) === '[object Array]';
@@ -93,6 +94,14 @@ function objectConcat(a, b) {
   return n;
 }
 
+// Function
+
+function fnMap(g, f) {
+  return curryN(f.length + g.length - 1, function() {
+    return f(g.apply(null, arguments));
+  });
+}
+
 // (eq a, eq b) => a -> b -> boolean
 function equals(a, b) {
   return isNumber(a) ? a === b
@@ -122,8 +131,9 @@ function empty(a) {
 
 // (Functor f) => (a -> b) -> f a -> f b
 function map(f, a) {
-  return isArray(a)  ? arrayMap(a, f)
-                     : undefined;
+  return isArray(a)    ? arrayMap(a, f)
+       : isFunction(a) ? fnMap(a, f)
+                       : undefined;
 }
 
 // (Applicative f) => f (a -> b) -> f a -> f b
