@@ -1,0 +1,29 @@
+{
+  "name": "seamless-fantasy",
+  "version": "0.0.1",
+  "description": "Make fantasy land seamlessly compatible with plain JavaScript data structures",
+  "main": "seamless-fantasy.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paldepind/plain-fantasy.git"
+  },
+  "keywords": [
+    "fantasy",
+    "land"
+  ],
+  "author": "Simon Friis Vindum",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/paldepind/plain-fantasy/issues"
+  },
+  "homepage": "https://github.com/paldepind/plain-fantasy#readme",
+  "dependencies": {
+    "ramda": "^0.15.1"
+  }
+}

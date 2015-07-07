@@ -116,6 +116,14 @@ describe('array', function() {
       assert.strictEqual(reduce(add, 3, [3, 4, 10]), 20);
     });
   });
+  describe('sequence', function() {
+    it('first array operation', function() {
+      assert.deepEqual(sequence([[1, 2, 3]], of([])), [[1], [2], [3]]);
+    });
+    it('second array operation', function() {
+      assert.deepEqual(sequence([[1,2,3],[4,5,6]], of([])), [[1,4],[1,5],[1,6],[2,4],[2,5],[2,6],[3,4],[3,5],[3,6]]);
+    })
+  });
   describe('chain', function() {
     it('concats arrays created by function', function() {
       function f(n) { return [n, 2*n, 3*n]; }

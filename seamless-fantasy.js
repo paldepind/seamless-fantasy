@@ -1,3 +1,5 @@
+var curry2 = require('ramda/src/internal/_curry2');
+
 var isArray = Array.isArray || function(a) {
   return Object.prototype.toString.call(a) === '[object Array]';
 };
@@ -57,6 +59,17 @@ function arrayReduce(f, b, a) {
     b = f(b, a[i]);
   }
   return b;
+}
+
+function append(a) {
+  return function(b) {
+    return [a].concat(b);
+  }
+}
+
+function arraySequence(a, of) {
+  return a.length === 0 ? of([])
+                        : ap(map(append, a[0]), arraySequence(a.slice(1), of));
 }
 
 // Object
@@ -120,10 +133,10 @@ function ap(a, b) {
 }
 
 // (Applicative f) => f a -> b -> f b
-function of(a, b) {
+var of = curry2(function(a, b) {
   return isArray(a) ? [b]
                     : undefined;
-}
+});
 
 // (Foldable t) => (a -> b -> b) -> b -> t a -> b
 function reduce(f, b, a) {
@@ -131,7 +144,9 @@ function reduce(f, b, a) {
                     : undefined;
 }
 
-function sequence() {
+function sequence(a, of) {
+  return isArray(a) ? arraySequence(a, of)
+                    : undefined;
 }
 
 function chain(f, a) {
@@ -147,5 +162,5 @@ function extract() {
 
 module.exports = {
   equals: equals, concat: concat, empty: empty, map: map,
-  ap: ap, of: of, reduce: reduce, chain: chain
+  ap: ap, of: of, reduce: reduce, sequence: sequence, chain: chain
 };
