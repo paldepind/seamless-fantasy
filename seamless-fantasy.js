@@ -102,6 +102,16 @@ function fnMap(g, f) {
   });
 }
 
+function fnAp(f, b) {
+  return function(x) {
+    return f(x)(b(x));
+  }
+}
+
+function fnOf(a) {
+  return function(_) { return a; };
+}
+
 // (eq a, eq b) => a -> b -> boolean
 function equals(a, b) {
   return isNumber(a) ? a === b
@@ -139,13 +149,15 @@ function map(f, a) {
 // (Applicative f) => f (a -> b) -> f a -> f b
 function ap(a, b) {
   return isArray(a) ? arrayAp(a, b)
+                    : isFunction(a) ? fnAp(a, b)
                     : undefined;
 }
 
 // (Applicative f) => f a -> b -> f b
 var of = curry2(function(a, b) {
-  return isArray(a) ? [b]
-                    : undefined;
+  return isArray(a)    ? [b]
+       : isFunction(a) ? fnOf(b)
+                       : undefined;
 });
 
 // (Foldable t) => (a -> b -> b) -> b -> t a -> b

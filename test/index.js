@@ -193,6 +193,20 @@ describe('function', function() {
       var fn = map(double, add);
       assert.equal(fn.length, 2);
       assert.equal(fn(1, 3), 8);
-    })
+    });
+  });
+  describe('ap', function() {
+    it('applies functions correctly', function() {
+      var fn = ap(function(_) { return addTwo; }, double);
+      assert.equal(fn(3), 8);
+      assert.equal(fn(7), 16);
+    });
   })
+  describe('of', function() {
+    it('creates function that always returns first argument', function() {
+      var fn = of(function() {}, 4);
+      assert.equal(fn(2), 4);
+      assert.equal(fn('hello'), 4);
+    });
+  });
 })
