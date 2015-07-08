@@ -10,6 +10,8 @@ var of = p.of;
 var reduce = p.reduce;
 var sequence = p.sequence;
 var chain = p.chain;
+var extend = p.extend;
+var extract = p.extract;
 
 function double(n) {
   return n * 2;
@@ -215,4 +217,83 @@ describe('function', function() {
       assert.equal(fn('hello'), 4);
     });
   });
-})
+});
+
+describe('method invocations', function() {
+  var called = false;
+  function method() {
+    called = true;
+  }
+  beforeEach(function () {
+    called = false;
+  });
+  afterEach(function() {
+    assert.equal(called, true);
+  });
+  it('invokes equals', function() {
+    equals({equals: method}, undefined);
+  });
+  it('invokes concat', function() {
+    concat({concat: method}, undefined);
+  });
+  it('invokes empty', function() {
+    empty({empty: method}, undefined);
+  });
+  it('invokes map', function() {
+    map(undefined, {map: method});
+  });
+  it('invokes ap', function() {
+    ap({ap: method}, undefined);
+  });
+  it('invokes of', function() {
+    of({of: method}, undefined);
+  });
+  it('invokes reduce', function() {
+    reduce(undefined, undefined, {reduce: method}, undefined);
+  });
+  it('invokes sequence', function() {
+    sequence({sequence: method}, undefined);
+  });
+  it('invokes chain', function() {
+    chain(undefined, {chain: method});
+  });
+  it('invokes extend', function() {
+    extend(undefined, {extend: method});
+  });
+  it('invokes extract', function() {
+    extract({extract: method}, undefined);
+  });
+});
+
+function _Add(n) {
+  this.n = n;
+}
+
+_Add.prototype.empty = function() {
+  return new _Add(0);
+}
+
+_Add.prototype.concat = function(m) {
+  return new _Add(this.n + m.n);
+}
+
+function Add(n) {
+  return new _Add(n);
+}
+
+describe('readme examples', function() {
+  //it('filter example', function() {
+    //function fold(l) {
+      //reduce()
+    //}
+  //})
+  it('foldMap', function() {
+    var empty = {};
+    function foldMap(f, l) {
+      return reduce(function(acc, n) {
+        return acc === empty ? f(n) : concat(acc, f(n));
+      }, empty, l);
+    }
+    assert.deepEqual(foldMap(Add, [1, 2, 3, 4]), Add(10));
+  });
+});
