@@ -94,6 +94,14 @@ function objectConcat(a, b) {
   return n;
 }
 
+function objectMap(o, f) {
+  var key, n = {};
+  for (key in o) {
+    n[key] = f(o[key]);
+  }
+  return n;
+}
+
 // Function
 
 function fnMap(g, f) {
@@ -143,6 +151,7 @@ function empty(a) {
 function map(f, a) {
   return isArray(a)    ? arrayMap(a, f)
        : isFunction(a) ? fnMap(a, f)
+       : isObject(a)   ? objectMap(a, f)
                        : undefined;
 }
 

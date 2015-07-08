@@ -180,6 +180,12 @@ describe('object', function() {
       assert.deepEqual(concat(o1, o2), {hello: 'there'});
     })
   })
+  describe('map', function() {
+    it('applies function to each value', function() {
+      assert.deepEqual(map(double, {a: 1, b: 2, c: 3, d: 4}),
+                       {a: 2, b: 4, c: 6, d: 8});
+    });
+  });
 });
 
 describe('function', function() {
